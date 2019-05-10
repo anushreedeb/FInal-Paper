@@ -1,0 +1,536 @@
+------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/anushreedeb/Desktop/MGPS/Data Management/Assignments/Final Paper/Data/DHS India 2015-16/DHS_Birth Re
+> code/birth_recode.log
+  log type:  text
+ opened on:   9 May 2019, 16:39:53
+
+. 
+. 
+. gen age = v008 - b3
+
+. 
+. gen child_age=.
+(1,315,617 missing values generated)
+
+. replace child_age = age if child_age==. & b7==.
+(1,222,366 real changes made)
+
+. 
+. gen infant_mor=0 if child_age > =12 & child_age!=.
+(141,546 missing values generated)
+
+. replace infant_mor = 1000 if b7 <12 & b7!=.
+(66,158 real changes made)
+
+. replace infant_mor = 0 if b7 > = 12 & b7! =.
+(27,093 real changes made)
+
+. label define infant_mor_label 0 Alive 1000 "Died before/on completing 1yr"
+
+. label values infant_mor infant_mor_label
+
+. tab infant_mor,m
+
+                   infant_mor |      Freq.     Percent        Cum.
+------------------------------+-----------------------------------
+                        Alive |  1,201,164       91.30       91.30
+Died before/on completing 1yr |     66,158        5.03       96.33
+                            . |     48,295        3.67      100.00
+------------------------------+-----------------------------------
+                        Total |  1,315,617      100.00
+
+. 
+. gen child_mor=0 if child_age > = 60 & child_age!=.
+(340,994 missing values generated)
+
+. replace child_mor = 1000 if b7 <60 & b7!=.
+(82,338 real changes made)
+
+. replace child_mor = 0 if b7 > = 60 & b7! =.
+(10,913 real changes made)
+
+. label define child_mor_label 0 Alive 1000 "Died before/on completing 5yr"
+
+. label values child_mor child_mor_label
+
+. tab child_mor,m
+
+                    child_mor |      Freq.     Percent        Cum.
+------------------------------+-----------------------------------
+                        Alive |    985,536       74.91       74.91
+Died before/on completing 5yr |     82,338        6.26       81.17
+                            . |    247,743       18.83      100.00
+------------------------------+-----------------------------------
+                        Total |  1,315,617      100.00
+
+. 
+. rename b4 gender /* sex of child*/
+
+. rename v190 wealth_index /* composite index of hh assets */
+
+. rename v133 edu /*educational attainment in single years of mother*/
+
+. rename v438 height /* height of mother*/
+
+. 
+. replace v744a = 2 if v744a == 1 /* converted all "yes (1)" responses into 2*/
+(59,316 real changes made)
+
+. replace v744b = 2 if v744b == 1
+(71,588 real changes made)
+
+. replace v744c = 2 if v744c == 1
+(67,261 real changes made)
+
+. replace v744d = 2 if v744d == 1
+(33,511 real changes made)
+
+. replace v744e = 2 if v744e == 1
+(46,429 real changes made)
+
+. replace s936f = 2 if s936f == 1
+(57,719 real changes made)
+
+. replace s936g = 2 if s936g == 1
+(86,025 real changes made)
+
+. 
+. replace v744a = 1 if v744a == 8 /* converted DKCS (8) responses into 1*/
+(1,243 real changes made)
+
+. replace v744b = 1 if v744b == 8
+(1,133 real changes made)
+
+. replace v744c = 1 if v744c == 8
+(1,669 real changes made)
+
+. replace v744d = 1 if v744d == 8
+(2,278 real changes made)
+
+. replace v744e = 1 if v744e == 8
+(1,185 real changes made)
+
+. replace s936f = 1 if s936f == 8
+(1,852 real changes made)
+
+. replace s936g = 1 if s936g == 8
+(1,500 real changes made)
+
+. 
+. replace v744a = .5 if v744a == 0 & v744a!=.  /* differentiates between 0 and missing values, converted all no response
+> s to.5 and told STATA that 0/no is not a missing value*/
+variable v744a was byte now float
+(167,760 real changes made)
+
+. replace v744b = .5 if v744b == 0 & v744b!=.
+variable v744b was byte now float
+(155,598 real changes made)
+
+. replace v744c = .5 if v744c == 0 & v744c!=.
+variable v744c was byte now float
+(159,389 real changes made)
+
+. replace v744d = .5 if v744d == 0 & v744d!=.
+variable v744d was byte now float
+(192,530 real changes made)
+
+. replace v744e = .5 if v744e == 0 & v744e!=.
+variable v744e was byte now float
+(180,705 real changes made)
+
+. replace s936f = .5 if s936f == 0 & s936f!=.
+variable s936f was byte now float
+(168,748 real changes made)
+
+. replace s936g = .5 if s936g == 0 & s936g!=.
+variable s936g was byte now float
+(140,794 real changes made)
+
+. 
+. replace v744a = 0 if v744a ==. /* converted actual missing values to 0*/
+(1,087,298 real changes made)
+
+. replace v744b = 0 if v744b ==.
+(1,087,298 real changes made)
+
+. replace v744c = 0 if v744c ==.
+(1,087,298 real changes made)
+
+. replace v744d = 0 if v744d ==.
+(1,087,298 real changes made)
+
+. replace v744e = 0 if v744e ==.
+(1,087,298 real changes made)
+
+. replace s936f = 0 if s936f ==.
+(1,087,298 real changes made)
+
+. replace s936g = 0 if s936g ==.
+(1,087,298 real changes made)
+
+. 
+. egen dom_violence = rsum (v744a v744b v744c v744d v744e s936f s936g)
+
+. drop if dom_violence ==0
+(1,087,298 observations deleted)
+
+. tab dom_violence /* continuous variable going from low to high */
+
+dom_violenc |
+          e |      Freq.     Percent        Cum.
+------------+-----------------------------------
+        3.5 |    108,007       47.31       47.31
+          4 |        743        0.33       47.63
+        4.5 |        421        0.18       47.82
+          5 |     22,082        9.67       57.49
+        5.5 |        677        0.30       57.78
+          6 |        305        0.13       57.92
+        6.5 |     20,873        9.14       67.06
+          7 |        836        0.37       67.42
+        7.5 |        291        0.13       67.55
+          8 |     18,540        8.12       75.67
+        8.5 |        606        0.27       75.94
+          9 |        212        0.09       76.03
+        9.5 |     15,644        6.85       82.88
+         10 |        557        0.24       83.13
+       10.5 |         73        0.03       83.16
+         11 |     12,667        5.55       88.71
+       11.5 |        328        0.14       88.85
+         12 |         68        0.03       88.88
+       12.5 |      9,836        4.31       93.19
+         13 |        194        0.08       93.27
+         14 |     15,359        6.73      100.00
+------------+-----------------------------------
+      Total |    228,319      100.00
+
+. 
+. reg infant_mor dom_violence [pweight = v005] , cluster (v001)
+(sum of wgt is 213,188,442,341)
+
+Linear regression                               Number of obs     =    219,897
+                                                F(1, 9886)        =      11.41
+                                                Prob > F          =     0.0007
+                                                R-squared         =     0.0001
+                                                Root MSE          =     220.04
+
+                               (Std. Err. adjusted for 9,887 clusters in v001)
+------------------------------------------------------------------------------
+             |               Robust
+  infant_mor |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+dom_violence |   .7001655   .2073048     3.38   0.001     .2938058    1.106525
+       _cons |    46.4713   1.498144    31.02   0.000     43.53463    49.40797
+------------------------------------------------------------------------------
+
+. estimates store m1, title(Model 1) 
+
+. reg infant_mor dom_violence edu wealth_index height [pweight = v005] , cluster (v001) 
+(sum of wgt is 211,102,415,952)
+
+Linear regression                               Number of obs     =    218,282
+                                                F(4, 9885)        =     234.02
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.0079
+                                                Root MSE          =     219.11
+
+                               (Std. Err. adjusted for 9,886 clusters in v001)
+------------------------------------------------------------------------------
+             |               Robust
+  infant_mor |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+dom_violence |   .0189054   .2017569     0.09   0.925    -.3765793      .41439
+         edu |  -1.940037   .1562634   -12.42   0.000    -2.246345   -1.633729
+wealth_index |  -9.102489   .6144707   -14.81   0.000    -10.30698   -7.898001
+      height |  -.0008796   .0007759    -1.13   0.257    -.0024006    .0006414
+       _cons |   87.46699   2.578857    33.92   0.000      82.4119    92.52207
+------------------------------------------------------------------------------
+
+. estimates store m2, title(Model 2)
+
+. reg infant_mor dom_violence edu wealth_index height i.v025 [pweight = v005] , cluster (v001) 
+(sum of wgt is 211,102,415,952)
+
+Linear regression                               Number of obs     =    218,282
+                                                F(5, 9885)        =     188.43
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.0079
+                                                Root MSE          =     219.11
+
+                               (Std. Err. adjusted for 9,886 clusters in v001)
+------------------------------------------------------------------------------
+             |               Robust
+  infant_mor |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+dom_violence |   .0105111   .2020484     0.05   0.959     -.385545    .4065673
+         edu |  -1.936509   .1562257   -12.40   0.000    -2.242743   -1.630274
+wealth_index |  -8.611861    .679834   -12.67   0.000    -9.944475   -7.279248
+      height |    -.00081   .0007786    -1.04   0.298    -.0023361    .0007161
+             |
+        v025 |
+      rural  |   2.988908   1.814989     1.65   0.100    -.5688412    6.546658
+       _cons |   83.90623   3.406225    24.63   0.000     77.22934    90.58313
+------------------------------------------------------------------------------
+
+. estimates store m3, title(Model 3)
+
+. reg infant_mor dom_violence edu wealth_index height i.v025 if gender == 1 [pweight = v005] , cluster (v001) 
+(sum of wgt is 109,760,189,368)
+
+Linear regression                               Number of obs     =    113,656
+                                                F(5, 9870)        =     108.11
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.0080
+                                                Root MSE          =     228.14
+
+                               (Std. Err. adjusted for 9,871 clusters in v001)
+------------------------------------------------------------------------------
+             |               Robust
+  infant_mor |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+dom_violence |  -.0178069   .2880264    -0.06   0.951    -.5823975    .5467838
+         edu |  -1.824415   .2247071    -8.12   0.000    -2.264887   -1.383944
+wealth_index |  -9.984806   .9452016   -10.56   0.000    -11.83759   -8.132018
+      height |  -.0014458   .0009474    -1.53   0.127    -.0033028    .0004113
+             |
+        v025 |
+      rural  |   .5016414   2.727993     0.18   0.854    -4.845782    5.849064
+       _cons |   95.09133   4.919056    19.33   0.000     85.44897    104.7337
+------------------------------------------------------------------------------
+
+. estimates store IMM, title(IMM_DV)
+
+. reg infant_mor dom_violence edu wealth_index height i.v025 if gender == 2 [pweight = v005] , cluster (v001)
+(sum of wgt is 101,342,226,584)
+
+Linear regression                               Number of obs     =    104,626
+                                                F(5, 9864)        =     107.17
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.0082
+                                                Root MSE          =     208.76
+
+                               (Std. Err. adjusted for 9,865 clusters in v001)
+------------------------------------------------------------------------------
+             |               Robust
+  infant_mor |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+dom_violence |   .0393382   .2546646     0.15   0.877    -.4598564    .5385329
+         edu |  -2.050814   .1973886   -10.39   0.000    -2.437736   -1.663892
+wealth_index |  -7.237762   .8315415    -8.70   0.000    -8.867754   -5.607771
+      height |  -.0001061   .0009795    -0.11   0.914    -.0020261     .001814
+             |
+        v025 |
+      rural  |   5.643276   2.134195     2.64   0.008     1.459817    9.826735
+       _cons |   72.14268   4.025823    17.92   0.000     64.25125    80.03412
+------------------------------------------------------------------------------
+
+. estimates store IMF, title(IMF_DV)
+
+. 
+. estout m1 m2 m3 IMM IMF, cells(b(star fmt(3)) se(par fmt(2))) legend label varlabels(_cons Constant) stats(r2 df_r bic
+> , fmt(3 0 1) label(R-sqr dfres BIC))
+
+----------------------------------------------------------------------------------------------------
+                          Model 1         Model 2         Model 3          IMM_DV          IMF_DV   
+                             b/se            b/se            b/se            b/se            b/se   
+----------------------------------------------------------------------------------------------------
+dom_violence                0.700***        0.019           0.011          -0.018           0.039   
+                           (0.21)          (0.20)          (0.20)          (0.29)          (0.25)   
+education in singl~s                       -1.940***       -1.937***       -1.824***       -2.051***
+                                           (0.16)          (0.16)          (0.22)          (0.20)   
+wealth index                               -9.102***       -8.612***       -9.985***       -7.238***
+                                           (0.61)          (0.68)          (0.95)          (0.83)   
+respondent's heigh~e                       -0.001          -0.001          -0.001          -0.000   
+                                           (0.00)          (0.00)          (0.00)          (0.00)   
+urban                                                       0.000           0.000           0.000   
+                                                              (.)             (.)             (.)   
+rural                                                       2.989           0.502           5.643** 
+                                                           (1.81)          (2.73)          (2.13)   
+Constant                   46.471***       87.467***       83.906***       95.091***       72.143***
+                           (1.50)          (2.58)          (3.41)          (4.92)          (4.03)   
+----------------------------------------------------------------------------------------------------
+R-sqr                       0.000           0.008           0.008           0.008           0.008   
+dfres                        9886            9885            9885            9870            9864   
+BIC                     2996235.2       2972410.6       2972416.5       1556900.6       1414630.5   
+----------------------------------------------------------------------------------------------------
+* p<0.05, ** p<0.01, *** p<0.001
+
+. 
+. corr infant_mor dom_violence
+(obs=219,897)
+
+             | infant~r dom_vi~e
+-------------+------------------
+  infant_mor |   1.0000
+dom_violence |   0.0117   1.0000
+
+
+. 
+. reg child_mor dom_violence [pweight = v005] , cluster (v001)
+(sum of wgt is 179,783,826,506)
+
+Linear regression                               Number of obs     =    185,142
+                                                F(1, 9878)        =      17.12
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.0002
+                                                Root MSE          =     262.45
+
+                               (Std. Err. adjusted for 9,879 clusters in v001)
+------------------------------------------------------------------------------
+             |               Robust
+   child_mor |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+dom_violence |   1.144986    .276704     4.14   0.000     .6025892    1.687382
+       _cons |   66.95398   2.002847    33.43   0.000     63.02799    70.87996
+------------------------------------------------------------------------------
+
+. estimates store m1, title(Model 1)
+
+. reg child_mor dom_violence edu wealth_index height [pweight = v005] , cluster (v001) 
+(sum of wgt is 178,003,957,194)
+
+Linear regression                               Number of obs     =    183,756
+                                                F(4, 9877)        =     308.92
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.0131
+                                                Root MSE          =     260.83
+
+                               (Std. Err. adjusted for 9,878 clusters in v001)
+------------------------------------------------------------------------------
+             |               Robust
+   child_mor |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+dom_violence |   .1927338   .2644665     0.73   0.466    -.3256745    .7111421
+         edu |  -1.782076   .2092691    -8.52   0.000    -2.192286   -1.371865
+wealth_index |   -17.5254   .7986515   -21.94   0.000    -19.09092   -15.95988
+      height |  -.0012799   .0010016    -1.28   0.201    -.0032433    .0006835
+       _cons |   133.7753   3.352428    39.90   0.000     127.2038    140.3467
+------------------------------------------------------------------------------
+
+. estimates store m2, title(Model 2)
+
+. reg child_mor dom_violence edu wealth_index height i.v025 [pweight = v005] , cluster (v001) 
+(sum of wgt is 178,003,957,194)
+
+Linear regression                               Number of obs     =    183,756
+                                                F(5, 9877)        =     248.31
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.0131
+                                                Root MSE          =     260.82
+
+                               (Std. Err. adjusted for 9,878 clusters in v001)
+------------------------------------------------------------------------------
+             |               Robust
+   child_mor |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+dom_violence |   .1824176   .2645584     0.69   0.491     -.336171    .7010062
+         edu |  -1.775066   .2093271    -8.48   0.000     -2.18539   -1.364742
+wealth_index |  -17.01425   .8819942   -19.29   0.000    -18.74314   -15.28536
+      height |  -.0012098   .0010053    -1.20   0.229    -.0031805    .0007608
+             |
+        v025 |
+      rural  |   3.124477   2.368618     1.32   0.187    -1.518498    7.767452
+       _cons |   130.0611    4.46715    29.12   0.000     121.3046    138.8176
+------------------------------------------------------------------------------
+
+. estimates store m3, title(Model 3)
+
+. reg child_mor dom_violence edu wealth_index height i.v025 if gender == 1 [pweight = v005] , cluster (v001)
+(sum of wgt is 92,633,628,120)
+
+Linear regression                               Number of obs     =     95,768
+                                                F(5, 9850)        =     133.45
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.0123
+                                                Root MSE          =     266.47
+
+                               (Std. Err. adjusted for 9,851 clusters in v001)
+------------------------------------------------------------------------------
+             |               Robust
+   child_mor |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+dom_violence |   .0907201   .3635334     0.25   0.803    -.6218798      .80332
+         edu |  -1.346022   .2927508    -4.60   0.000    -1.919873     -.77217
+wealth_index |  -18.01418   1.197928   -15.04   0.000    -20.36236   -15.66599
+      height |  -.0022041   .0011446    -1.93   0.054    -.0044478    .0000396
+             |
+        v025 |
+      rural  |    1.33497   3.382038     0.39   0.693    -5.294517    7.964457
+       _cons |   138.4935   6.116818    22.64   0.000     126.5033    150.4837
+------------------------------------------------------------------------------
+
+. estimates store CMM, title(CMM_DV) 
+
+. reg child_mor dom_violence edu wealth_index height i.v025 if gender == 2 [pweight = v005] , cluster (v001)
+(sum of wgt is 85,370,329,074)
+
+Linear regression                               Number of obs     =     87,988
+                                                F(5, 9833)        =     153.83
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.0143
+                                                Root MSE          =     254.48
+
+                               (Std. Err. adjusted for 9,834 clusters in v001)
+------------------------------------------------------------------------------
+             |               Robust
+   child_mor |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+dom_violence |    .284363   .3459234     0.82   0.411    -.3937179    .9624438
+         edu |  -2.242157   .2702517    -8.30   0.000    -2.771905   -1.712408
+wealth_index |  -16.00588   1.107799   -14.45   0.000     -18.1774   -13.83437
+      height |  -.0000935   .0013225    -0.07   0.944    -.0026859    .0024989
+             |
+        v025 |
+      rural  |   5.060087    2.88343     1.75   0.079    -.5920283     10.7122
+       _cons |   121.0862   5.516139    21.95   0.000     110.2735     131.899
+------------------------------------------------------------------------------
+
+. estimates store CMF, title(CMF_DV) 
+
+. 
+. estout m1 m2 m3 CMM CMF, cells(b(star fmt(3)) se(par fmt(2))) legend label varlabels(_cons Constant) stats(r2 df_r bic
+> , fmt(3 0 1) label(R-sqr dfres BIC))
+
+----------------------------------------------------------------------------------------------------
+                          Model 1         Model 2         Model 3          CMM_DV          CMF_DV   
+                             b/se            b/se            b/se            b/se            b/se   
+----------------------------------------------------------------------------------------------------
+dom_violence                1.145***        0.193           0.182           0.091           0.284   
+                           (0.28)          (0.26)          (0.26)          (0.36)          (0.35)   
+education in singl~s                       -1.782***       -1.775***       -1.346***       -2.242***
+                                           (0.21)          (0.21)          (0.29)          (0.27)   
+wealth index                              -17.525***      -17.014***      -18.014***      -16.006***
+                                           (0.80)          (0.88)          (1.20)          (1.11)   
+respondent's heigh~e                       -0.001          -0.001          -0.002          -0.000   
+                                           (0.00)          (0.00)          (0.00)          (0.00)   
+urban                                                       0.000           0.000           0.000   
+                                                              (.)             (.)             (.)   
+rural                                                       3.124           1.335           5.060   
+                                                           (2.37)          (3.38)          (2.88)   
+Constant                   66.954***      133.775***      130.061***      138.494***      121.086***
+                           (2.00)          (3.35)          (4.47)          (6.12)          (5.52)   
+----------------------------------------------------------------------------------------------------
+R-sqr                       0.000           0.013           0.013           0.012           0.014   
+dfres                        9878            9877            9877            9850            9833   
+BIC                     2587936.8       2566316.3       2566324.2       1341620.3       1224530.5   
+----------------------------------------------------------------------------------------------------
+* p<0.05, ** p<0.01, *** p<0.001
+
+. 
+. corr child_mor dom_violence
+(obs=185,142)
+
+             | child_~r dom_vi~e
+-------------+------------------
+   child_mor |   1.0000
+dom_violence |   0.0157   1.0000
+
+
+. 
+. log close
+      name:  <unnamed>
+       log:  /Users/anushreedeb/Desktop/MGPS/Data Management/Assignments/Final Paper/Data/DHS India 2015-16/DHS_Birth Re
+> code/birth_recode.log
+  log type:  text
+ closed on:   9 May 2019, 16:40:17
+------------------------------------------------------------------------------------------------------------------------
